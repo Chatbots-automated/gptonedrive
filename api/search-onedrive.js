@@ -62,7 +62,7 @@ async function getAccessToken() {
   try {
     const tenantId = 'bfc9924e-c574-4dad-ae2d-a46d1b6f1a1a';
     const clientId = 'f368c58b-2909-46bd-95ae-308e2222d3c8';
-    const clientSecret = '31d38644-1213-4f0a-a5a8-8ee7d856b215';
+    const clientSecret = 'ukT8Q~JIZWAkBNuYIv4KKZVsc6bp0OLNvOXltbak';
 
     console.log('Hardcoded credentials being used for token request.');
 
