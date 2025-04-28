@@ -28,7 +28,7 @@ async function handler(req, res) {
     console.log('Access Token acquired.');
 
     // 👇 Path to your secured folder
-    const folderPath = 'Documents/GPT-Files'; // <<< CHANGE THIS TO YOUR FOLDER
+    const folderPath = 'Marketingas/FOTO'; // <<< CHANGE THIS TO YOUR FOLDER
 
     const response = await fetch(`https://graph.microsoft.com/v1.0/me/drive/root:/${folderPath}:/children`, {
       headers: {
