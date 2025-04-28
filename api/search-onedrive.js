@@ -27,10 +27,12 @@ async function handler(req, res) {
     const accessToken = await getAccessToken();
     console.log('Access Token acquired.');
 
-    // 👇 Path to your secured folder
-    const folderPath = 'Marketingas/FOTO'; // <<< CHANGE THIS TO YOUR FOLDER
+    const driveId = 'YOUR_DRIVE_ID_HERE'; // 🔥 Once you get the real drive ID
 
-    const response = await fetch(`https://graph.microsoft.com/v1.0/me/drive/root:/${folderPath}:/children`, {
+    // 👇 Your real path inside the drive
+    const folderPath = 'Marketingas/FOTO';
+
+    const response = await fetch(`https://graph.microsoft.com/v1.0/drives/${driveId}/root:/${folderPath}:/children`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -62,7 +64,7 @@ async function getAccessToken() {
   try {
     const tenantId = 'bfc9924e-c574-4dad-ae2d-a46d1b6f1a1a';
     const clientId = 'f368c58b-2909-46bd-95ae-308e2222d3c8';
-    const clientSecret = 'ukT8Q~JIZWAkBNuYIv4KKZVsc6bp0OLNvOXltbak'; // your latest secret
+    const clientSecret = 'ukT8Q~JIZWAkBNuYIv4KKZVsc6bp0OLNvOXltbak';
 
     console.log('Hardcoded credentials being used for token request.');
 
