@@ -23,8 +23,12 @@ async function handler(req, res) {
   }
 
   try {
+    console.log('Starting search for query:', query);
     const accessToken = await getAccessToken();
+    console.log('Access Token acquired.');
+
     const shareId = encodeShareUrl(folderUrl);
+    console.log('Encoded Share URL:', shareId);
 
     const response = await fetch(`https://graph.microsoft.com/v1.0/shares/${shareId}/driveItem/children`, {
       headers: {
@@ -33,8 +37,10 @@ async function handler(req, res) {
     });
 
     const data = await response.json();
+    console.log('Files data:', JSON.stringify(data, null, 2));
 
     if (!data.value) {
+      console.error('Error: No value field in response.');
       return res.status(500).json({ error: 'Unable to retrieve files from OneDrive.' });
     }
 
@@ -47,29 +53,42 @@ async function handler(req, res) {
 
     res.status(200).json({ files: matchingFiles });
   } catch (err) {
-    console.error('Error:', err);
+    console.error('Error in handler:', err);
     res.status(500).json({ error: 'Unexpected error' });
   }
 }
 
 async function getAccessToken() {
-  const tenantId = process.env.TENANT_ID;
-  const clientId = process.env.CLIENT_ID;
-  const clientSecret = process.env.CLIENT_SECRET;
+  try {
+    const tenantId = 'bfc9924e-c574-4dad-ae2d-a46d1b6f1a1a';
+    const clientId = 'f368c58b-2909-46bd-95ae-308e2222d3c8';
+    const clientSecret = '31d38644-1213-4f0a-a5a8-8ee7d856b215';
 
-  const tokenRes = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      grant_type: 'client_credentials',
-      client_id: clientId,
-      client_secret: clientSecret,
-      scope: 'https://graph.microsoft.com/.default'
-    })
-  });
+    console.log('Hardcoded credentials being used for token request.');
 
-  const tokenData = await tokenRes.json();
-  return tokenData.access_token;
+    const tokenRes = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'client_credentials',
+        client_id: clientId,
+        client_secret: clientSecret,
+        scope: 'https://graph.microsoft.com/.default'
+      })
+    });
+
+    const tokenData = await tokenRes.json();
+    console.log('Token response:', JSON.stringify(tokenData, null, 2));
+
+    if (!tokenData.access_token) {
+      throw new Error('Access token not returned');
+    }
+
+    return tokenData.access_token;
+  } catch (err) {
+    console.error('Error fetching access token:', err);
+    throw err;
+  }
 }
 
 function encodeShareUrl(url) {
