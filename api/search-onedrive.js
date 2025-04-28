@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed. Use POST.' });
   }
@@ -11,12 +11,11 @@ export default async function handler(req, res) {
 
   try {
     const accessToken = await getAccessToken();
-
     const shareId = encodeShareUrl(folderUrl);
 
-    const response = await fetch(https://graph.microsoft.com/v1.0/shares/${shareId}/driveItem/children, {
+    const response = await fetch(`https://graph.microsoft.com/v1.0/shares/${shareId}/driveItem/children`, {
       headers: {
-        Authorization: Bearer ${accessToken}
+        Authorization: `Bearer ${accessToken}`
       }
     });
 
@@ -45,7 +44,7 @@ async function getAccessToken() {
   const clientId = process.env.CLIENT_ID;
   const clientSecret = process.env.CLIENT_SECRET;
 
-  const tokenRes = await fetch(https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token, {
+  const tokenRes = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
@@ -62,5 +61,7 @@ async function getAccessToken() {
 
 function encodeShareUrl(url) {
   const base64 = Buffer.from(url).toString('base64');
-  return u!${base64.replace(/\//g, '_').replace(/\+/g, '-')};
+  return `u!${base64.replace(/\//g, '_').replace(/\+/g, '-')}`;
 }
+
+module.exports = handler;
