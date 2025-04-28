@@ -16,10 +16,10 @@ async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  const { query, folderUrl } = req.body;
+  const { query } = req.body;
 
-  if (!query || !folderUrl) {
-    return res.status(400).json({ error: 'Missing query or folderUrl' });
+  if (!query) {
+    return res.status(400).json({ error: 'Missing query' });
   }
 
   try {
@@ -27,10 +27,10 @@ async function handler(req, res) {
     const accessToken = await getAccessToken();
     console.log('Access Token acquired.');
 
-    const shareId = encodeShareUrl(folderUrl);
-    console.log('Encoded Share URL:', shareId);
+    // 👇 Path to your secured folder
+    const folderPath = 'Documents/GPT-Files'; // <<< CHANGE THIS TO YOUR FOLDER
 
-    const response = await fetch(`https://graph.microsoft.com/v1.0/shares/${shareId}/driveItem/children`, {
+    const response = await fetch(`https://graph.microsoft.com/v1.0/me/drive/root:/${folderPath}:/children`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -62,7 +62,7 @@ async function getAccessToken() {
   try {
     const tenantId = 'bfc9924e-c574-4dad-ae2d-a46d1b6f1a1a';
     const clientId = 'f368c58b-2909-46bd-95ae-308e2222d3c8';
-    const clientSecret = 'ukT8Q~JIZWAkBNuYIv4KKZVsc6bp0OLNvOXltbak';
+    const clientSecret = 'ukT8Q~JIZWAkBNuYIv4KKZVsc6bp0OLNvOXltbak'; // your latest secret
 
     console.log('Hardcoded credentials being used for token request.');
 
@@ -89,11 +89,6 @@ async function getAccessToken() {
     console.error('Error fetching access token:', err);
     throw err;
   }
-}
-
-function encodeShareUrl(url) {
-  const base64 = Buffer.from(url).toString('base64');
-  return `u!${base64.replace(/\//g, '_').replace(/\+/g, '-')}`;
 }
 
 module.exports = handler;
